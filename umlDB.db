@@ -1,0 +1,44 @@
+--
+-- File generated with SQLiteStudio v3.2.1 on Wed May 1 07:46:10 2019
+--
+-- Text encoding used: UTF-8
+--
+PRAGMA foreign_keys = off;
+BEGIN TRANSACTION;
+
+-- Table: Accounts
+CREATE TABLE Accounts (
+    id    INT    PRIMARY KEY
+                 NOT NULL,
+    login STRING NOT NULL,
+    pass  STRING NOT NULL,
+    type  STRING,
+    name  STRING
+);
+
+INSERT INTO Accounts (
+                         id,
+                         login,
+                         pass,
+                         type,
+                         name
+                     )
+                     VALUES (
+                         1,
+                         'root',
+                         'root',
+                         'root',
+                         'root'
+                     );
+
+
+-- Table: Processes
+CREATE TABLE Processes (
+    id      INT    PRIMARY KEY,
+    command STRING,
+    status  STRING
+);
+
+
+COMMIT TRANSACTION;
+PRAGMA foreign_keys = on;
