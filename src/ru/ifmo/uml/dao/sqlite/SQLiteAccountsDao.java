@@ -18,7 +18,7 @@ public class SQLiteAccountsDao implements AccountsDao {
     private final static String SELECT_ALL = "SELECT * FROM Accounts";
     private final static String REMOVE_BY_ID = "DELETE FROM Accounts WHERE id=?";
     private final static String REMOVE_BY_LOGIN = "DELETE FROM Accounts WHERE login=?";
-    private final static String INSERT = "INSERT INTO Accounts VALUES (?, ?, ?, ?)";
+    private final static String INSERT = "INSERT INTO Accounts VALUES (?, ?, ?)";
     private final static String UPDATE = "UPDATE Accounts SET pass=? WHERE login=?";
 
     private final SQLiteDao sqLiteDao;
@@ -38,6 +38,7 @@ public class SQLiteAccountsDao implements AccountsDao {
             ps.setString(1, login);
             ResultSet result = ps.executeQuery();
             assert result != null;
+            result.next();
             return new Account(
                     result.getString(2),
                     result.getString(3),
@@ -66,14 +67,14 @@ public class SQLiteAccountsDao implements AccountsDao {
 
         try {
 
-            PreparedStatement ps = connection.prepareStatement(INSERT);
-            ps.setNull(1, 0);
-            ps.setString(2, o.getLogin());
-            ps.setString(3, o.getPass());
+            PreparedStatement ps = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, o.getLogin());
+            ps.setString(2, o.getPass());
             long id = o.getEmployee().getId();
-            ps.setLong(4, id);
+            ps.setLong(3, id);
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
+            rs.next();
             o.setId(rs.getInt(1));
         } catch (SQLException e) {
         }
@@ -89,6 +90,7 @@ public class SQLiteAccountsDao implements AccountsDao {
             ps.setLong(1, id);
             ResultSet result = ps.executeQuery();
             assert result != null;
+            result.next();
             Account account = new Account(result.getString(2), result.getString(3), sqLiteDao.employeeDao.get(result.getInt(4)));
             account.setId(id);
             return account;

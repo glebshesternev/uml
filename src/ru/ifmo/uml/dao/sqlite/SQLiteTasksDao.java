@@ -6,10 +6,7 @@ import ru.ifmo.uml.dao.Dao;
 import ru.ifmo.uml.domain.Equipment.Equipment;
 import ru.ifmo.uml.domain.Task.Task;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +17,7 @@ public class SQLiteTasksDao implements Dao<Task> {
     private final static String SELECT_BY_ID = "SELECT * FROM Tasks WHERE id=?";
     private final static String SELECT_ALL = "SELECT * FROM Tasks";
     private final static String REMOVE_BY_ID = "DELETE FROM Tasks WHERE id=?";
-    private final static String INSERT = "INSERT INTO Tasks VALUES (?, ?, ?, ?)";
+    private final static String INSERT = "INSERT INTO Tasks VALUES (?, ?, ?)";
     private final static String UPDATE = "UPDATE Tasks SET status=? WHERE id=?";
 
     private final SQLiteDao sqLiteDao;
@@ -39,13 +36,13 @@ public class SQLiteTasksDao implements Dao<Task> {
 
         try {
 
-            PreparedStatement ps = connection.prepareStatement(INSERT);
-            ps.setNull(1, 0);
-            ps.setInt(2, (int) o.getEquipment().getId());
-            ps.setString(3, o.getGoal());
-            ps.setString(4, o.getStatus());
+            PreparedStatement ps = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, (int) o.getEquipment().getId());
+            ps.setString(2, o.getGoal());
+            ps.setString(3, o.getStatus());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
+            rs.next();
             o.setId(rs.getInt(1));
         } catch (SQLException e) {
         }
@@ -61,6 +58,7 @@ public class SQLiteTasksDao implements Dao<Task> {
             ps.setLong(1, id);
             ResultSet result = ps.executeQuery();
             assert result != null;
+            result.next();
             Equipment equipment = sqLiteDao.equipmentDao.get(result.getInt(2));
             Task task = new Task(equipment, result.getString(3), result.getString(4));
             task.setId(id);

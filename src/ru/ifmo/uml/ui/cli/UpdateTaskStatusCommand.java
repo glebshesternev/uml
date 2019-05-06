@@ -32,7 +32,9 @@ public class UpdateTaskStatusCommand extends Command {
         cliApp.output.println(task.toString());
 
         if (task.getGoal().equals("dismantling") && task.getStatus().equals("done")) {
-            cliApp.equipmentManager.remove(task.getEquipment().getId());
+            long eqId = task.getEquipment().getId();
+            cliApp.taskManager.remove(task.getId());
+            cliApp.equipmentManager.remove(eqId);
         }
 
         if (task.getStatus().equals("done")) {

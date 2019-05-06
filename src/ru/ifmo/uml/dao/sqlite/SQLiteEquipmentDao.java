@@ -5,12 +5,10 @@ package ru.ifmo.uml.dao.sqlite;
 import ru.ifmo.uml.dao.Dao;
 import ru.ifmo.uml.domain.Equipment.Equipment;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 
 
@@ -19,7 +17,7 @@ public class SQLiteEquipmentDao implements Dao<Equipment> {
     private final static String SELECT_BY_ID = "SELECT * FROM Equipment WHERE id=?";
     private final static String SELECT_ALL = "SELECT * FROM Equipment";
     private final static String REMOVE_BY_ID = "DELETE FROM Equipment WHERE id=?";
-    private final static String INSERT = "INSERT INTO Equipment VALUES (?, ?, ?)";
+    private final static String INSERT = "INSERT INTO Equipment VALUES (?, ?)";
     private final static String UPDATE = "UPDATE Equipment SET name=? WHERE id=?";
 
     private final SQLiteDao sqLiteDao;
@@ -38,12 +36,12 @@ public class SQLiteEquipmentDao implements Dao<Equipment> {
 
         try {
 
-            PreparedStatement ps = connection.prepareStatement(INSERT);
-            ps.setNull(1, 0);
-            ps.setString(2, o.getName());
-            ps.setInt(3, (int) o.getEngineer().getId());
+            PreparedStatement ps = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, o.getName());
+            ps.setInt(2, (int) o.getEngineer().getId());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
+            rs.next();
             o.setId(rs.getInt(1));
         } catch (SQLException e) {
         }
@@ -59,6 +57,7 @@ public class SQLiteEquipmentDao implements Dao<Equipment> {
             ps.setLong(1, id);
             ResultSet result = ps.executeQuery();
             assert result != null;
+            result.next();
             Equipment equipment = new Equipment(result.getString(2), sqLiteDao.employeeDao.get(result.getInt(3)));
             equipment.setId(id);
             return equipment;
