@@ -25,6 +25,7 @@ public class UpdateTaskStatusCommand extends Command {
 
         cliApp.output.print("Task id: ");
         long id = cliApp.input.nextLong();
+        cliApp.input.nextLine();
         Task task = cliApp.taskManager.get(id);
         if (task == null) {
             cliApp.output.println("Not found");
