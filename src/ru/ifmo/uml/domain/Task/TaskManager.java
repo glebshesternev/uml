@@ -22,9 +22,9 @@ public class TaskManager {
     }
 
 
-    public Task add(Equipment equipment, String goal) {
+    public Task add(Equipment equipment, String goal, String location) {
 
-        Task task = new Task(equipment, goal);
+        Task task = new Task(equipment, goal, location);
         tasksDao.insert(task);
         return task;
     }

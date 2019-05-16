@@ -11,7 +11,7 @@ import java.util.List;
 
 
 
-public class SQLiteEmployeeDao implements EmployeeDao {
+public class MsSqlEmployeeDao implements EmployeeDao {
 
     private final static String SELECT_BY_ID = "SELECT * FROM Employee WHERE id=?";
     private final static String SELECT_BY_TYPE = "SELECT * FROM Employee WHERE type=?";
@@ -20,14 +20,14 @@ public class SQLiteEmployeeDao implements EmployeeDao {
     private final static String INSERT = "INSERT INTO Employee VALUES (?, ?)";
     private final static String UPDATE = "UPDATE Employee SET name=?, type=? WHERE id=?";
 
-    private final SQLiteDao sqLiteDao;
+    private final MsSqlDao msSqlDao;
     private final Connection connection;
 
 
-    public SQLiteEmployeeDao(SQLiteDao sqLiteDao) {
+    public MsSqlEmployeeDao(MsSqlDao msSqlDao) {
 
-        this.sqLiteDao = sqLiteDao;
-        this.connection = sqLiteDao.getConnection();
+        this.msSqlDao = msSqlDao;
+        this.connection = msSqlDao.getConnection();
     }
 
 

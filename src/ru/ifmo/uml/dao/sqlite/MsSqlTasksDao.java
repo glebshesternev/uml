@@ -12,22 +12,22 @@ import java.util.List;
 
 
 
-public class SQLiteTasksDao implements Dao<Task> {
+public class MsSqlTasksDao implements Dao<Task> {
 
     private final static String SELECT_BY_ID = "SELECT * FROM Tasks WHERE id=?";
     private final static String SELECT_ALL = "SELECT * FROM Tasks";
     private final static String REMOVE_BY_ID = "DELETE FROM Tasks WHERE id=?";
-    private final static String INSERT = "INSERT INTO Tasks VALUES (?, ?, ?)";
+    private final static String INSERT = "INSERT INTO Tasks VALUES (?, ?, ?, ?)";
     private final static String UPDATE = "UPDATE Tasks SET status=? WHERE id=?";
 
-    private final SQLiteDao sqLiteDao;
+    private final MsSqlDao msSqlDao;
     private final Connection connection;
 
 
-    public SQLiteTasksDao(SQLiteDao sqLiteDao) {
+    public MsSqlTasksDao(MsSqlDao msSqlDao) {
 
-        this.sqLiteDao = sqLiteDao;
-        this.connection = sqLiteDao.getConnection();
+        this.msSqlDao = msSqlDao;
+        this.connection = msSqlDao.getConnection();
     }
 
 
@@ -39,7 +39,8 @@ public class SQLiteTasksDao implements Dao<Task> {
             PreparedStatement ps = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, (int) o.getEquipment().getId());
             ps.setString(2, o.getGoal());
-            ps.setString(3, o.getStatus());
+            ps.setString(3, o.getLocation());
+            ps.setString(4, o.getStatus());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             rs.next();
@@ -59,8 +60,8 @@ public class SQLiteTasksDao implements Dao<Task> {
             ResultSet result = ps.executeQuery();
             assert result != null;
             result.next();
-            Equipment equipment = sqLiteDao.equipmentDao.get(result.getInt(2));
-            Task task = new Task(equipment, result.getString(3), result.getString(4));
+            Equipment equipment = msSqlDao.equipmentDao.get(result.getInt(2));
+            Task task = new Task(equipment, result.getString(3), result.getString(4), result.getString(5));
             task.setId(id);
             return task;
         } catch (SQLException e) {
@@ -78,8 +79,8 @@ public class SQLiteTasksDao implements Dao<Task> {
             ResultSet result = ps.executeQuery();
             assert result != null;
             while (result.next()) {
-                Equipment equipment = sqLiteDao.equipmentDao.get(result.getInt(2));
-                Task task = new Task(equipment, result.getString(3), result.getString(4));
+                Equipment equipment = msSqlDao.equipmentDao.get(result.getInt(2));
+                Task task = new Task(equipment, result.getString(3), result.getString(4), result.getString(5));
                 task.setId(result.getInt(1));
                 tasks.add(task);
             }

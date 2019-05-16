@@ -23,6 +23,7 @@ public class WriteOffCommand extends Command {
         }
         cliApp.output.print("Equipment id: ");
         long id = cliApp.input.nextLong();
+        cliApp.input.nextLine();
         Equipment equipment = cliApp.equipmentManager.get(id);
         if (equipment == null) {
             cliApp.output.println("Not found");
@@ -30,7 +31,7 @@ public class WriteOffCommand extends Command {
         }
         cliApp.output.print("You chose: ");
         cliApp.output.println(equipment.toString());
-        cliApp.taskManager.add(equipment, "dismantling");
+        cliApp.taskManager.add(equipment, "dismantling", "warehouse");
         return true;
     }
 }

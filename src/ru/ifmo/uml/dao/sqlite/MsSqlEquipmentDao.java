@@ -8,26 +8,25 @@ import ru.ifmo.uml.domain.Equipment.Equipment;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 
 
-public class SQLiteEquipmentDao implements Dao<Equipment> {
+public class MsSqlEquipmentDao implements Dao<Equipment> {
 
     private final static String SELECT_BY_ID = "SELECT * FROM Equipment WHERE id=?";
     private final static String SELECT_ALL = "SELECT * FROM Equipment";
     private final static String REMOVE_BY_ID = "DELETE FROM Equipment WHERE id=?";
-    private final static String INSERT = "INSERT INTO Equipment VALUES (?, ?)";
-    private final static String UPDATE = "UPDATE Equipment SET name=? WHERE id=?";
+    private final static String INSERT = "INSERT INTO Equipment VALUES (?, ?, ?)";
+    private final static String UPDATE = "UPDATE Equipment SET location=? WHERE id=?";
 
-    private final SQLiteDao sqLiteDao;
+    private final MsSqlDao msSqlDao;
     private final Connection connection;
 
 
-    public SQLiteEquipmentDao(SQLiteDao sqLiteDao) {
+    public MsSqlEquipmentDao(MsSqlDao msSqlDao) {
 
-        this.sqLiteDao = sqLiteDao;
-        this.connection = sqLiteDao.getConnection();
+        this.msSqlDao = msSqlDao;
+        this.connection = msSqlDao.getConnection();
     }
 
 
@@ -38,7 +37,8 @@ public class SQLiteEquipmentDao implements Dao<Equipment> {
 
             PreparedStatement ps = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, o.getName());
-            ps.setInt(2, (int) o.getEngineer().getId());
+            ps.setString(2, o.getLocation());
+            ps.setInt(3, (int) o.getEngineer().getId());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             rs.next();
@@ -58,7 +58,7 @@ public class SQLiteEquipmentDao implements Dao<Equipment> {
             ResultSet result = ps.executeQuery();
             assert result != null;
             result.next();
-            Equipment equipment = new Equipment(result.getString(2), sqLiteDao.employeeDao.get(result.getInt(3)));
+            Equipment equipment = new Equipment(result.getString(2), result.getString(3), msSqlDao.employeeDao.get(result.getInt(4)));
             equipment.setId(id);
             return equipment;
         } catch (SQLException e) {
@@ -76,7 +76,7 @@ public class SQLiteEquipmentDao implements Dao<Equipment> {
             ResultSet result = ps.executeQuery();
             assert result != null;
             while (result.next()) {
-                Equipment equipment = new Equipment(result.getString(2), sqLiteDao.employeeDao.get(result.getInt(3)));
+                Equipment equipment = new Equipment(result.getString(2), result.getString(3), msSqlDao.employeeDao.get(result.getInt(4)));
                 equipment.setId(result.getInt(1));
                 equipments.add(equipment);
             }
@@ -91,7 +91,7 @@ public class SQLiteEquipmentDao implements Dao<Equipment> {
 
         try {
             PreparedStatement ps = connection.prepareStatement(UPDATE);
-            ps.setString(1, o.getName());
+            ps.setString(1, o.getLocation());
             ps.setLong(2, o.getId());
             ps.executeUpdate();
         } catch (SQLException e) {

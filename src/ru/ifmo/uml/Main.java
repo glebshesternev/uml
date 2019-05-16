@@ -16,7 +16,7 @@ public class Main {
         String login = "123";
         String pass = "1234";
         try {
-            //SQLiteAccountsDao sqLiteAccountsDao = new SQLiteAccountsDao("jdbc:sqlite:db");
+            //MsSqlAccountsDao sqLiteAccountsDao = new MsSqlAccountsDao("jdbc:sqlite:db");
             //System.out.println(sqLiteAccountsDao.get("root").getLogin());
             CliApp cliApp = new CliApp(connectionUrl, login, pass);
             cliApp.execute();

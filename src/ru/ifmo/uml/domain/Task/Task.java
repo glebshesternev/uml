@@ -11,21 +11,24 @@ public class Task extends Entity {
 
     private Equipment equipment;
     private String goal;
+    private String location;
     private String status;
 
 
-    public Task(Equipment equipment, String goal) {
+    public Task(Equipment equipment, String goal, String location) {
 
         this.equipment = equipment;
         this.goal = goal;
+        this.location = location;
         this.status = "planning";
     }
 
 
-    public Task(Equipment equipment, String goal, String status) {
+    public Task(Equipment equipment, String goal, String location, String status) {
 
         this.equipment = equipment;
         this.goal = goal;
+        this.location = location;
         if (status.equals("inProgress") || status.equals("done")) {
             this.status = status;
         } else {
@@ -50,6 +53,12 @@ public class Task extends Entity {
     public String getGoal() {
 
         return goal;
+    }
+
+
+    public String getLocation() {
+
+        return location;
     }
 
 

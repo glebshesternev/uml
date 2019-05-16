@@ -24,13 +24,14 @@ public class TransferCommand extends Command {
 
         cliApp.output.print("Equipment id: ");
         long id = cliApp.input.nextLong();
+        cliApp.input.nextLine();
+        cliApp.output.print("New location: ");
+        String location = cliApp.input.nextLine();
         Equipment equipment = cliApp.equipmentManager.get(id);
         cliApp.output.print("You chose: ");
         cliApp.output.println(equipment.toString());
-        cliApp.taskManager.add(equipment, "dismantling");
-        cliApp.taskManager.add(equipment, "move");
-        cliApp.taskManager.add(equipment, "install");
-        cliApp.output.println("3 tasks created.");
+        cliApp.taskManager.add(equipment, "move", location);
+        cliApp.output.println("task created.");
         return true;
     }
 

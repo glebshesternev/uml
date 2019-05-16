@@ -2,6 +2,7 @@ package ru.ifmo.uml.ui.cli;
 
 
 
+import ru.ifmo.uml.domain.Equipment.Equipment;
 import ru.ifmo.uml.domain.Task.Task;
 
 
@@ -25,6 +26,10 @@ public class UpdateTaskStatusCommand extends Command {
         cliApp.output.print("Task id: ");
         long id = cliApp.input.nextLong();
         Task task = cliApp.taskManager.get(id);
+        if (task == null) {
+            cliApp.output.println("Not found");
+            return true;
+        }
         task.update();
         cliApp.taskManager.update(task);
 
@@ -35,10 +40,12 @@ public class UpdateTaskStatusCommand extends Command {
             long eqId = task.getEquipment().getId();
             cliApp.taskManager.remove(task.getId());
             cliApp.equipmentManager.remove(eqId);
-        }
-
-        if (task.getStatus().equals("done")) {
+        } else if (task.getStatus().equals("done")) {
+            Equipment eq = task.getEquipment();
+            eq.setLocation(task.getLocation());
+            cliApp.equipmentManager.update(eq);
             cliApp.taskManager.remove(task.getId());
+
         }
 
         return true;

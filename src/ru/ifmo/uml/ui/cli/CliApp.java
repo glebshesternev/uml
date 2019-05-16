@@ -2,7 +2,7 @@ package ru.ifmo.uml.ui.cli;
 
 
 
-import ru.ifmo.uml.dao.sqlite.SQLiteDao;
+import ru.ifmo.uml.dao.sqlite.MsSqlDao;
 import ru.ifmo.uml.domain.Accounts.Account;
 import ru.ifmo.uml.domain.Accounts.AuthorizationSystem;
 import ru.ifmo.uml.domain.Employee.EmployeeManager;
@@ -21,7 +21,7 @@ public class CliApp {
 
     final private Map<String, Command> commands = new TreeMap<>();
 
-    final private SQLiteDao sqLiteDao;
+    final private MsSqlDao msSqlDao;
 
     final AuthorizationSystem authSystem;
     final EmployeeManager employeeManager;
@@ -38,12 +38,12 @@ public class CliApp {
 
     public CliApp(String url, String login, String pass) throws SQLException {
 
-        sqLiteDao = new SQLiteDao(url, login, pass);
+        msSqlDao = new MsSqlDao(url, login, pass);
 
-        authSystem = new AuthorizationSystem(sqLiteDao.accountsDao);
-        employeeManager = new EmployeeManager(sqLiteDao.employeeDao);
-        equipmentManager = new EquipmentManager(sqLiteDao.equipmentDao);
-        taskManager = new TaskManager(sqLiteDao.tasksDao);
+        authSystem = new AuthorizationSystem(msSqlDao.accountsDao);
+        employeeManager = new EmployeeManager(msSqlDao.employeeDao);
+        equipmentManager = new EquipmentManager(msSqlDao.equipmentDao);
+        taskManager = new TaskManager(msSqlDao.tasksDao);
 
         input = new Scanner(System.in);
         output = new PrintStream(System.out);
@@ -51,7 +51,7 @@ public class CliApp {
         putCommand(new SignInCommand("signin", this));
         putCommand(new SignOutCommand("signout", this));
         putCommand(new SignUpCommand("signup", this, "root"));
-        putCommand(new TransferCommand("transfer", this, "manager"));
+        putCommand(new TransferCommand("tf", this, "manager"));
         putCommand(new AddEquipmentCommand("add", this, "manager"));
         putCommand(new EquipmentListCommand("eqlist", this, "manager"));
         putCommand(new EmployeeListCommand("emplist", this, "manager"));

@@ -11,7 +11,7 @@ import java.util.List;
 
 
 
-public class SQLiteAccountsDao implements AccountsDao {
+public class MsSqlAccountsDao implements AccountsDao {
 
     private final static String SELECT_BY_ID = "SELECT * FROM Accounts WHERE id=?";
     private final static String SELECT_BY_LOGIN = "SELECT * FROM Accounts WHERE login=?";
@@ -21,12 +21,12 @@ public class SQLiteAccountsDao implements AccountsDao {
     private final static String INSERT = "INSERT INTO Accounts VALUES (?, ?, ?)";
     private final static String UPDATE = "UPDATE Accounts SET pass=? WHERE login=?";
 
-    private final SQLiteDao sqLiteDao;
+    private final MsSqlDao msSqlDao;
     private final Connection connection;
 
-    public SQLiteAccountsDao(SQLiteDao sqLiteDao) {
-        this.sqLiteDao = sqLiteDao;
-        this.connection = sqLiteDao.getConnection();
+    public MsSqlAccountsDao(MsSqlDao msSqlDao) {
+        this.msSqlDao = msSqlDao;
+        this.connection = msSqlDao.getConnection();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class SQLiteAccountsDao implements AccountsDao {
 
         try {
 
-            PreparedStatement ps = sqLiteDao.getConnection().prepareStatement(SELECT_BY_LOGIN);
+            PreparedStatement ps = msSqlDao.getConnection().prepareStatement(SELECT_BY_LOGIN);
             ps.setString(1, login);
             ResultSet result = ps.executeQuery();
             assert result != null;
@@ -42,7 +42,7 @@ public class SQLiteAccountsDao implements AccountsDao {
             return new Account(
                     result.getString(2),
                     result.getString(3),
-                    sqLiteDao.employeeDao.get(result.getInt(4)));
+                    msSqlDao.employeeDao.get(result.getInt(4)));
         } catch (SQLException e) {
         }
         return null;
@@ -91,7 +91,7 @@ public class SQLiteAccountsDao implements AccountsDao {
             ResultSet result = ps.executeQuery();
             assert result != null;
             result.next();
-            Account account = new Account(result.getString(2), result.getString(3), sqLiteDao.employeeDao.get(result.getInt(4)));
+            Account account = new Account(result.getString(2), result.getString(3), msSqlDao.employeeDao.get(result.getInt(4)));
             account.setId(id);
             return account;
         } catch (SQLException e) {
@@ -109,7 +109,7 @@ public class SQLiteAccountsDao implements AccountsDao {
             ResultSet result = ps.executeQuery();
             assert result != null;
             while (result.next()) {
-                Account account = new Account(result.getString(2), result.getString(3), sqLiteDao.employeeDao.get(result.getInt(4)));
+                Account account = new Account(result.getString(2), result.getString(3), msSqlDao.employeeDao.get(result.getInt(4)));
                 account.setId(result.getInt(1));
                 accounts.add(account);
             }

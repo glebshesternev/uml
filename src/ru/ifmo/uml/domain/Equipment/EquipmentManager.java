@@ -20,14 +20,18 @@ public class EquipmentManager {
     }
 
 
-    public Equipment add(String name, Employee engineer) {
+    public Equipment add(String name, String location, Employee engineer) {
 
         if (!engineer.getType().equals("engineer")) {
             return null;
         }
-        Equipment equipment = new Equipment(name, engineer);
+        Equipment equipment = new Equipment(name, location, engineer);
         equipmentDao.insert(equipment);
         return equipment;
+    }
+
+    public void update(Equipment equipment) {
+        equipmentDao.update(equipment);
     }
 
 
